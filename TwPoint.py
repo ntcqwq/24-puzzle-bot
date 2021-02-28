@@ -1,10 +1,10 @@
-import random, string, re
+import random, string, re, datetime, config
 from random import sample
 from telegram.ext import Dispatcher,CommandHandler, MessageHandler, Filters, Updater
 from telegram import BotCommand
 
 games = {}
-rank = {}
+LifetimeStats = config.CONFIG['LifetimeStats']
 
 def help():
     return r"""欢迎来到 Noah 的 24 点游戏! 
@@ -15,49 +15,72 @@ def help():
 
 祝你们好运!"""
 
+
+def correctAnswers(func):
+    return func['correct']
+
+def errors(func):
+    return func['error']
+
+def list_lifetime_stats(update,context):
+    lead = ""
+    index = 1
+    title = ""
+    info = []
+    uid = update.effective_user.id
+    first_name = update.effective_user.first_name
+    check_lifetime_stats(uid,first_name)
+    for uids in LifetimeStats:
+        info.append({
+            'uid': uids,
+            'correct':LifetimeStats[uids]['correct'],
+            'error':LifetimeStats[uids]['error'],
+            'fname':LifetimeStats[uids]['fname']
+            })
+        info.sort(key=errors,reverse=False)
+        info.sort(key=correctAnswers,reverse=True)
+    for each in info:  
+        if index != 1 and index != 2 and index != 3:
+            lead += f"「{index}𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ {each['fname']}: ✅ {each['correct']} 次正确 ❌ {each['error']} 次错误\n"
+        else:
+            if index == 1:
+                title = "🏆 𝗖𝗵𝗮𝗺𝗽𝗶𝗼𝗻" 
+            elif index == 2:
+                title = "🎖 𝗪𝗶𝗻𝗻𝗲𝗿"
+            elif index == 3:
+                title = "🏅 𝗩𝗶𝗰𝘁𝗼𝗿"
+            lead += f"「{title}」 ✨ {each['fname']}: ✅ {each['correct']} 次正确 ❌ {each['error']} 次错误\n"
+        index += 1
+    update.message.reply_text(lead)
+
 def sort_leaderboards(chatid,uid,fname):
     lead = ""
-    final = []
+    index = 1
+    title = ""
+    info = []
     check_user(uid,chatid,fname)
-    if not chatid in rank:
-        rank[chatid] = {}
     for uids in games[chatid]['users']:
-        correct = games[chatid]['users'][uids]['correct']['count']
-        incorrect = games[chatid]['users'][uids]['error']
-        # print(incorrect)
-        rank[chatid][uids] = {
-            'correct':correct,
-            'error':incorrect,
-            'fname':games[chatid]['users'][uids]['fname'],
-        }
-    value = [0,0,""]
-    index = 0
-    print(rank[chatid]['1360440667']['correct'],rank[chatid]['1360440667']['error'],)
-    for uids in range(0,len(list(rank[chatid]))):
-        for i in range(0,len(list(rank[chatid]))):
-            for j in list(rank[chatid]):
-                print(j)
-                if rank[chatid][j]['correct'] > value[0]:
-                    print(rank[chatid][j]['correct'])
-                    print([rank[chatid][j]['correct'],rank[chatid][j]['error'],rank[chatid][j]['fname']])
-                    # print(value)
-                    index = i
-                elif rank[chatid][j]['correct'] == value[0]:
-                    if rank[chatid][j]['error'] < value[1]:
-                        value = [rank[chatid][j]['correct'],rank[chatid][j]['error'],rank[chatid][j]['fname']]
-                        index = i
-
-                print(rank[chatid][j]['error'],value[1])
-        # print(value)
-        
-        final.append(f"#{index+1} ✨ {value[2]}: ✅ {value[0]} 次正确 ❌ {value[1]} 次错误\n")
-        del rank[chatid][j]     
-    for every in final:
-        if not value[2] == "":
-            lead += every
+        info.append({
+            'uid': uids,
+            'correct':games[chatid]['users'][uids]['correct']['count'],
+            'error':games[chatid]['users'][uids]['error'],
+            'fname':games[chatid]['users'][uids]['fname']
+            })
+        info.sort(key=correctAnswers,reverse=True)
+        print(info)
+    for each in info:  
+        if index != 1 and index != 2 and index != 3:
+            lead += f"「{index}𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ {each['fname']}: ✅ {each['correct']} 次正确 ❌ {each['error']} 次错误\n"
         else:
-            lead = f"✨ {games[chatid]['users'][uid]['fname']}: ✅ {games[chatid]['users'][uid]['correct']['count']} 次正确 ❌ {games[chatid]['users'][uid]['error']} 次错误\n"
-    return lead
+            if index == 1:
+                title = "🏆 𝗖𝗵𝗮𝗺𝗽𝗶𝗼𝗻" 
+            elif index == 2:
+                title = "🎖 𝗪𝗶𝗻𝗻𝗲𝗿"
+            elif index == 3:
+                title = "🏅 𝗩𝗶𝗰𝘁𝗼𝗿"
+            lead += f"「{title}」 ✨ {each['fname']}: ✅ {each['correct']} 次正确 ❌ {each['error']} 次错误\n"
+        index += 1
+    return lead 
     
 def detective_system(answer,cards):
     Cheat = False
@@ -74,6 +97,7 @@ def detective_system(answer,cards):
 def set_games_cards(chatid,cards,uid,fname):
     games[chatid] = {}
     games[chatid]['cards'] = cards
+    games[chatid]['time'] = datetime.datetime.now()
     games[chatid]['users'] = {}
     games[chatid]['users'][uid] = {
             'fname':fname,
@@ -100,6 +124,14 @@ def check_user(uid,chatid,first_name):
                 'error':0 
         }
 
+def check_lifetime_stats(uid,first_name):
+    if not uid in LifetimeStats:
+        LifetimeStats[uid] = {
+            'fname':first_name,
+            'correct':0,
+            'error':0
+        }
+
 def start(update,context): 
     uid = str(update.effective_user.id)
     fname = str(update.effective_user.first_name)
@@ -112,19 +144,30 @@ def start(update,context):
 
 
 def question(update,context):
+    title = ""
+    index = 1
     first_name = update.effective_user.first_name
     uid = str(update.effective_user.id)
     chatid = update.effective_chat.id
     correctAnswers = ""
     lead = ""
-    print(sort_leaderboards(chatid,uid,first_name))
     try:
         check_user(uid,chatid,first_name)
-
         for uid in games[chatid]['users']:
             for answer in games[chatid]['users'][uid]['correct']['answer']:
-                correctAnswers += f"✔︎ {games[chatid]['users'][uid]['fname']}: {answer}\n"
-            # lead += f"✨ {games[chatid]['users'][uid]['fname']}: ✅ {games[chatid]['users'][uid]['correct']['count']} 次正确 ❌ {games[chatid]['users'][uid]['error']} 次错误\n"
+                time = answer[1] - games[chatid]['time']
+                time = str(time)[:-7]
+                if index != 1 and index != 2 and index != 3:
+                    correctAnswers += f"「{index}𝘁𝗵 𝗮𝗻𝘀𝘄𝗲𝗿」{games[chatid]['users'][uid]['fname']}  ✔︎  {answer[0]} ⏱ ({time})\n"
+                else:
+                    if index == 1:
+                        title = "🥇 𝗚𝗼𝗹𝗱"
+                    elif index == 2:
+                        title = "🥈 𝗦𝗶𝗹𝘃𝗲𝗿"
+                    elif index == 3:
+                        title = "🥉 𝗕𝗿𝗼𝗻𝘇𝗲"
+                    correctAnswers += f"「{title}」{games[chatid]['users'][uid]['fname']}  ✔︎  {answer[0]} ⏱ ({time})\n"
+                index += 1
         update.effective_message.reply_text(f"""当前卡牌：{games[chatid]['cards']}
 --------------------
 目前的正确答案：
@@ -150,43 +193,52 @@ def proc_text(update,context):
     chatid = update.effective_chat.id
     uid = str(update.effective_user.id)    
     msg = ""
-    answer = update.message.text.replace(".","").replace("（","(")
+    answer = update.message.text.replace(".","").replace("（","(").replace("）",")")
     if answer[0].isdigit() or answer[0] == "(":
         try: 
             cards = games[chatid]['cards']
             check_user(uid,chatid,first_name)
+            check_lifetime_stats(uid,first_name)
             if not answer in games[chatid]['totalanswers']:
                 try:
                     if detective_system(answer,cards) == False:
                         if int(eval(answer)) == 24:
                             msg = f"{first_name} 答对啦！" 
                             games[chatid]['users'][uid]['correct']['count'] += 1
-                            games[chatid]['users'][uid]['correct']['answer'].append(answer.replace(" ",""))
-                            games[chatid]['totalanswers'].append(answer.replace(" ",""))  
+                            LifetimeStats[uid]['correct'] += 1
+                            games[chatid]['users'][uid]['correct']['answer'].append([answer.replace(" ",""),datetime.datetime.now()])
+                            games[chatid]['totalanswers'].append(answer.replace(" ",""))
+                            print(games)  
                         else:  
                             msg = f"{first_name} 答错啦！"
                             games[chatid]['users'][uid]['error'] += 1
+                            LifetimeStats[uid]['error'] += 1
                     else:
                         games[chatid]['users'][uid]['error'] += 1
+                        LifetimeStats[uid]['error'] += 1
                         msg = f"请使用我给你的那几个数字！需有查看更多规则，请查看 /gamerules ."                                                                                                                    
                 except:
                     msg = f"{first_name} 答错啦！您的目标是尝试去使用 {games[chatid]['cards']} 来算出 24.\n请记住, 您只能使用 +, -, *, / 和 (). "
                     games[chatid]['users'][uid]['error'] += 1
+                    LifetimeStats[uid]['error'] += 1
             else:
                 msg = f"{first_name}, 某某人已经说出来您的答案啦！"
         except KeyError:
             msg = "目前没有被开启的游戏。/gamestart24 来开启一个游戏。"
         update.effective_message.reply_text(msg)
+    config.save_config()
 
 def add_handler(dp:Dispatcher):
     dp.add_handler(CommandHandler('gamestart24', start))
     dp.add_handler(CommandHandler('gameq', question))
     dp.add_handler(CommandHandler('gameend24', end))
     dp.add_handler(CommandHandler('gamerules', rules))
+    dp.add_handler(CommandHandler('gamelifetimestats',list_lifetime_stats))
     dp.add_handler(MessageHandler(Filters.text & (~Filters.command) & Filters.chat_type.supergroup,proc_text))
     return [
         BotCommand('gamestart24','开始一个24点游戏'),
         BotCommand('gameq','查询当前进行中的24点游戏'),
         BotCommand('gameend24','结束当前进行的游戏'),
-        BotCommand('gamerules','查询24点的游戏规则')
+        BotCommand('gamerules','查询24点的游戏规则'),
+        BotCommand('gamelifetimestats','查询总排行榜')
         ]
