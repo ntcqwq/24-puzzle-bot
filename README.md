@@ -1,8 +1,12 @@
-# Noah's 24 Game Bot
+## Noah's 24 Game Bot
 
-Contributers:
+# Contributers:
 
-    @SSnipro 
-    @Sichengthebest (about three lines) 
-    @hdcola
+>>> @ SSnipro 
+>>> @ Sichengthebest (about three lines) 
+>>> @ hdcola
+
+--------------
+
+
 
