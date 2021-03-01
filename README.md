@@ -1,12 +1,12 @@
 # Noah's 24 Game Bot
 
-### Contributers:
+### Contributors:
 
->>> @ SSnipro 
+> @ SSnipro 
 
->>> @ Sichengthebest (about three lines) 
+> @ Sichengthebest (about 3 lines) 
 
->>> @ hdcola
+> @ hdcola
 
 --------------
 
