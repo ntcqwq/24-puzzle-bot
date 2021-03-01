@@ -59,7 +59,7 @@ def sort_leaderboards(chatid,u,f,title,WLB,uids):
                     'fname': games[chatid]['users'][uid]['fname']
                     })
             elif WLB == "LTLB":
-                check_lifetime_stats(uid,fname)
+                check_lifetime_stats(u,f)
                 PlayerStatus.append({
                     'uid': uid,
                     'correct': LifetimeStats[uid]['correct'],
@@ -201,7 +201,6 @@ def proc_text(update,context):
                             LifetimeStats[uid]['correct'] += 1
                             games[chatid]['users'][uid]['correct']['answer'].append([answer,datetime.datetime.now()])
                             games[chatid]['totalanswers'].append(answer)
-                            print(games)  
                         else:  
                             msg = f"{first_name} 答错啦！"
                             games[chatid]['users'][uid]['error'] += 1
