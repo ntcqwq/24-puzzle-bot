@@ -87,7 +87,7 @@ def sort_leaderboards(chatid,u,f,title,WLB,uids):
     for EachPlayer in PlayerStatus:  
         if Placement != 1 and Placement != 2 and Placement != 3:
             if WLB == "QLB" or WLB == "LTLB":
-                Leaderboard += f"「{Placement}𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ {EachPlayer['fname']}: ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
+                Leaderboard += f"「{Placement}𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ {EachPlayer['fname']}:\n    ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
             elif WLB == "QCAT":
                 Leaderboard += f"「{Placement}𝘁𝗵 𝗮𝗻𝘀𝘄𝗲𝗿」{EachPlayer['fname']}  ✔︎  {EachPlayer['answer']} ⏱ ({EachPlayer['time']})\n"
         else:
@@ -95,7 +95,7 @@ def sort_leaderboards(chatid,u,f,title,WLB,uids):
                 if Placement == Num:
                     Title = title[Num-1]
             if WLB == "QLB" or WLB == "LTLB":
-                Leaderboard += f"「{Title}」 ✨ {EachPlayer['fname']}: ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
+                Leaderboard += f"「{Title}」 ✨ {EachPlayer['fname']}:\n    ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
             elif WLB == "QCAT":
                 Leaderboard += f"「{Title}」{EachPlayer['fname']}  ✔︎  {EachPlayer['answer']} ⏱ ({EachPlayer['time']})\n"
         Placement += 1

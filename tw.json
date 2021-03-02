@@ -2,7 +2,7 @@
     "LifetimeStats": {
         "1360440667": {
             "fname": "Noah",
-            "correct": 130,
+            "correct": 133,
             "error": 33
         },
         "932729306": {
@@ -17,8 +17,8 @@
         },
         "1014166264": {
             "fname": "CHEN",
-            "correct": 4,
-            "error": 0
+            "correct": 6,
+            "error": 1
         }
     }
 }
