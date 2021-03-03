@@ -132,6 +132,8 @@ def detective_system(answer,cards):
     for number in Numbers:
         if not int(number) in cards:
             Cheat = True
+    if "(((" in answer or ")))" in answer or ("((" in answer and "))" in answer):
+        Cheat = True
     try:
         if answer.endswith(')') and answer.startswith('('):
             if eval(answer.lstrip("(").rstrip(")")) == eval(answer):
