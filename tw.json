@@ -2,8 +2,8 @@
     "LifetimeStats": {
         "1360440667": {
             "fname": "Noah",
-            "correct": 139,
-            "error": 39
+            "correct": 145,
+            "error": 36
         },
         "932729306": {
             "fname": "Sichengthebest",
@@ -13,12 +13,17 @@
         "465307161": {
             "fname": "老房东",
             "correct": 0,
-            "error": 6
+            "error": 7
         },
         "1014166264": {
             "fname": "CHEN",
             "correct": 6,
             "error": 1
+        },
+        "611516537": {
+            "fname": "Parker",
+            "correct": 0,
+            "error": 2
         }
     }
 }

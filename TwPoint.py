@@ -137,11 +137,12 @@ def detective_system(answer,cards):
     for number in Numbers:
         if not int(number) in cards:
             Cheat = True
-    if ("(((" in answer or ")))" in answer) or ("((" in answer and "))" in answer) or len(bracketCount) >= 5:
+    if ("(((" in answer or ")))" in answer) or ("((" in answer and "))" in answer) or len(bracketCount) >= 6:
         Cheat = True
     try:
         if answer.endswith(')') and answer.startswith('('):
-            Cheat = eval(answer.lstrip("(").rstrip(")")) is eval(answer)
+            if eval(answer.lstrip('(').rstrip(')')) == eval(answer):
+                Cheat = True
     except SyntaxError:
         pass
     return Cheat
