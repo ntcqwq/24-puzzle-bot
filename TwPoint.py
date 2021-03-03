@@ -15,7 +15,6 @@ def help():
 
 祝你们好运!"""
 
-
 def correctAnswers(func):
     return func['correct']
 
@@ -40,14 +39,36 @@ def set_games_cards(chatid,cards,uid,fname):
         }
     games[chatid]['totalanswers'] = []
 
-def sort_leaderboards(chatid,u,f,title,WLB,uids):
+def check_user(uid,chatid,first_name):
+    if not chatid in games:
+        games[chatid] = {}
+        games[chatid]['users'] = {}
+    if not uid in games[chatid]['users']:
+        games[chatid]['users'][uid] = {
+            'fname':first_name,
+                'correct':{
+                    'count':0,
+                    'answer':[]
+                },
+                'error':0 
+        }
+
+def check_lifetime_stats(uid,first_name):
+    if not uid in LifetimeStats:
+        LifetimeStats[uid] = {
+            'fname':first_name,
+            'correct':0,
+            'error':0
+        }
+
+def sort_leaderboards(chatid,UID,FNAME,title,WLB,uids):
 
     Leaderboard = ""
     Title = ""
     Placement = 1 
     PlayerStatus = []
 
-    check_user(u,chatid,f)
+    check_user(UID,chatid,FNAME)
     
     if WLB == "QLB" or WLB == "LTLB":
         for uid in uids:
@@ -59,7 +80,7 @@ def sort_leaderboards(chatid,u,f,title,WLB,uids):
                     'fname': games[chatid]['users'][uid]['fname']
                     })
             elif WLB == "LTLB":
-                check_lifetime_stats(u,f)
+                check_lifetime_stats(UID,FNAME)
                 PlayerStatus.append({
                     'uid': uid,
                     'correct': LifetimeStats[uid]['correct'],
@@ -87,7 +108,7 @@ def sort_leaderboards(chatid,u,f,title,WLB,uids):
     for EachPlayer in PlayerStatus:  
         if Placement != 1 and Placement != 2 and Placement != 3:
             if WLB == "QLB" or WLB == "LTLB":
-                Leaderboard += f"「{Placement}𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ {EachPlayer['fname']}:\n    ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
+                Leaderboard += f"「{Placement}𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ {EachPlayer['fname']} | ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
             elif WLB == "QCAT":
                 Leaderboard += f"「{Placement}𝘁𝗵 𝗮𝗻𝘀𝘄𝗲𝗿」{EachPlayer['fname']}  ✔︎  {EachPlayer['answer']} ⏱ ({EachPlayer['time']})\n"
         else:
@@ -95,7 +116,7 @@ def sort_leaderboards(chatid,u,f,title,WLB,uids):
                 if Placement == Num:
                     Title = title[Num-1]
             if WLB == "QLB" or WLB == "LTLB":
-                Leaderboard += f"「{Title}」 ✨ {EachPlayer['fname']}:\n    ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
+                Leaderboard += f"「{Title}」 ✨ {EachPlayer['fname']} | ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
             elif WLB == "QCAT":
                 Leaderboard += f"「{Title}」{EachPlayer['fname']}  ✔︎  {EachPlayer['answer']} ⏱ ({EachPlayer['time']})\n"
         Placement += 1
@@ -111,31 +132,13 @@ def detective_system(answer,cards):
     for number in Numbers:
         if not int(number) in cards:
             Cheat = True
+    try:
+        if answer.endswith(')') and answer.startswith('('):
+            if eval(answer.lstrip("(").rstrip(")")) == eval(answer):
+                Cheat = True
+    except SyntaxError:
+        pass
     return Cheat
-
-
-
-def check_user(uid,chatid,first_name):
-    if not chatid in games:
-        games[chatid] = {}
-        games[chatid]['users'] = {}
-    if not uid in games[chatid]['users']:
-        games[chatid]['users'][uid] = {
-            'fname':first_name,
-                'correct':{
-                    'count':0,
-                    'answer':[]
-                },
-                'error':0 
-        }
-
-def check_lifetime_stats(uid,first_name):
-    if not uid in LifetimeStats:
-        LifetimeStats[uid] = {
-            'fname':first_name,
-            'correct':0,
-            'error':0
-        }
 
 def start(update,context): 
     uid = str(update.effective_user.id)
@@ -208,7 +211,7 @@ def proc_text(update,context):
                     else:
                         games[chatid]['users'][uid]['error'] += 1
                         LifetimeStats[uid]['error'] += 1
-                        msg = f"请使用我给你的那几个数字！需有查看更多规则，请查看 /gamerules ."                                                                                                                    
+                        msg = f"请使用我给你的那几个数字并且不要使用不必要的括号！需有查看更多规则，请查看 /gamerules ."                                                                                                                    
                 except:
                     msg = f"{first_name} 答错啦！您的目标是尝试去使用 {games[chatid]['cards']} 来算出 24.\n请记住, 您只能使用 +, -, *, / 和 (). "
                     games[chatid]['users'][uid]['error'] += 1
@@ -225,12 +228,12 @@ def add_handler(dp:Dispatcher):
     dp.add_handler(CommandHandler('gameq', question))
     dp.add_handler(CommandHandler('gameend24', end))
     dp.add_handler(CommandHandler('gamerules', rules))
-    dp.add_handler(CommandHandler('gamelifetimestats',List_Lifetime_Stats))
+    dp.add_handler(CommandHandler('gamel',List_Lifetime_Stats))
     dp.add_handler(MessageHandler(Filters.text & (~Filters.command) & Filters.chat_type.groups,proc_text))
     return [
         BotCommand('gamestart24','开始一个24点游戏'),
         BotCommand('gameq','查询当前进行中的24点游戏'),
         BotCommand('gameend24','结束当前进行的游戏'),
         BotCommand('gamerules','查询24点的游戏规则'),
-        BotCommand('gamelifetimestats','查询总排行榜')
+        BotCommand('gamel','查询总排行榜')
         ]
