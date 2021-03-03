@@ -125,19 +125,23 @@ def sort_leaderboards(chatid,UID,FNAME,title,WLB,uids):
 def detective_system(answer,cards):
     Cheat = False
     Numbers = list(dict.fromkeys(re.findall(r'\d+', answer)))
+
     modsAnswer = answer.replace("+","_").replace("-","_").replace("*","_").replace("/","_")
     numberCount = modsAnswer.split("_")
+
+    modbAnswer = answer.replace("(","_").replace(")","_")
+    bracketCount = modbAnswer.split("_")
+
     if not len(numberCount) == 4:
         Cheat = True
     for number in Numbers:
         if not int(number) in cards:
             Cheat = True
-    if "(((" in answer or ")))" in answer or ("((" in answer and "))" in answer):
+    if ("(((" in answer or ")))" in answer) or ("((" in answer and "))" in answer) or len(bracketCount) >= 5:
         Cheat = True
     try:
         if answer.endswith(')') and answer.startswith('('):
-            if eval(answer.lstrip("(").rstrip(")")) == eval(answer):
-                Cheat = True
+            Cheat = eval(answer.lstrip("(").rstrip(")")) is eval(answer)
     except SyntaxError:
         pass
     return Cheat
