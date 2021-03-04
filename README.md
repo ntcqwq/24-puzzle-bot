@@ -77,3 +77,35 @@ This is the formation:
     「🥈 𝗦𝗶𝗹𝘃𝗲𝗿」Sichengthebest  ✔︎  (8*3)+8-8 ⏱ (0:00:45)
     「🥉 𝗕𝗿𝗼𝗻𝘇𝗲」Sichengthebest  ✔︎  8*3+8-8 ⏱ (0:00:54)
 
+###### gameQ Leaderboard
+
+The gameQ leaderboard first ranks the correct answers of each user. If two users have the same number of correct answers, then it will be based on the number of errors between the two users (the lower errors the better)
+
+This is the formation:
+
+    --------------------
+    Personal Rankings:
+
+    「🏆 𝗖𝗵𝗮𝗺𝗽𝗶𝗼𝗻」 ✨ Sichengthebest | ✅ 2 Correct Answers ❌ 0 Errors
+    「🎖 𝗪𝗶𝗻𝗻𝗲𝗿」 ✨ Noah | ✅ 1 Correct Answer ❌ 0 Errors
+    「🏅 𝗩𝗶𝗰𝘁𝗼𝗿」 ✨ 老房东 | ✅ 0 Correct Answers ❌ 1 Error
+
+###### Lifetime Leaderboard
+
+The lifetime leaderboard has the same ranking system as the gameQ leaderboard. The only difference is that the gameQ leaderboard refreshes each game, but the lifetime leaderboard indicates the total amount of correct and incorrect answers of a user.
+
+This is the formation:
+
+    「🏆 𝗖𝗵𝗮𝗺𝗽𝗶𝗼𝗻」 ✨ Noah | ✅ 147 Correct Answers ❌ 38 Errors
+    「🎖 𝗪𝗶𝗻𝗻𝗲𝗿」 ✨ Sichengthebest | ✅ 70 Correct Answers ❌ 45 Errors
+    「🏅 𝗩𝗶𝗰𝘁𝗼𝗿」 ✨ some guy | ✅ 6 Correct Answers ❌ 1 Error
+    「4𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ Parker | ✅ 0 Correct Answers ❌ 2 Errors
+    「5𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ 老房东 | ✅ 0 Correct Answers ❌ 7 Errors
+
+## Version Updates:
+
+2021/03/04
+
+#### Version Alpha
+
+> First release
