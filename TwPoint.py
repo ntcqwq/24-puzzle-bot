@@ -1,7 +1,7 @@
 import random, string, re, datetime, config
 from random import sample
 from telegram.ext import Dispatcher,CommandHandler, MessageHandler, Filters, Updater
-from telegram import BotCommand
+from telegram import BotCommand, PhotoSize
 
 games = {}
 LifetimeStats = config.CONFIG['LifetimeStats']
@@ -11,7 +11,7 @@ def help():
     
 您的目标是尝试去使用四个数字来算出 24。
 每张牌都必须使用一次，但不能重复使用。
-请记住, 您只能使用 +, -, *, / 和 ()。 
+请记住, 您只能使用 加，减，乘，除，和括号。 
 
 祝你们好运!"""
 
@@ -153,8 +153,8 @@ def start(update,context):
     chatid = update.effective_chat.id
     cards = random.choices(range(1,10),k=4) 
     update.effective_message.reply_text(f" {help()} 四个数字分别是：") 
-
     context.bot.send_message(chatid, text=f"{cards[0]}, {cards[1]}, {cards[2]}, {cards[3]}")
+    context.bot.send_photo(chatid, photo=open('/Users/Snipro/work/24gamebot/Images/re.png', 'rb'), caption= "⚠️ 温馨提示：请把 Telegram 自动表情给关掉！")
     set_games_cards(chatid,cards,uid,fname)
 
 
@@ -183,7 +183,7 @@ def end(update,context):
     del games[update.effective_chat.id]
 
 def rules(update,context):
-    update.message.reply_text(help())
+    update.message.reply_photo(help())
 
 def List_Lifetime_Stats(update,context):
     uid = str(update.effective_user.id)
