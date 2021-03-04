@@ -11,7 +11,7 @@ def help():
     
 您的目标是尝试去使用四个数字来算出 24。
 每张牌都必须使用一次，但不能重复使用。
-请记住, 您只能使用 加，减，乘，除，和括号。 
+请记住, 您只能使用 加，减，乘，除，和括号 （请不要用不必要的括号）。 
 
 祝你们好运!"""
 
@@ -137,6 +137,9 @@ def detective_system(answer,cards):
     for number in Numbers:
         if not int(number) in cards:
             Cheat = True
+    for every in range(1,10):
+        if f"({every})" in answer:
+            Cheat = True
     if ("(((" in answer or ")))" in answer) or ("((" in answer and "))" in answer) or len(bracketCount) >= 6:
         Cheat = True
     try:
@@ -183,7 +186,7 @@ def end(update,context):
     del games[update.effective_chat.id]
 
 def rules(update,context):
-    update.message.reply_photo(help())
+    update.message.reply_text(help())
 
 def List_Lifetime_Stats(update,context):
     uid = str(update.effective_user.id)
