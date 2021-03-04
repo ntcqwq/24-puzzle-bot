@@ -13,7 +13,9 @@ def help():
 每张牌都必须使用一次，但不能重复使用。
 请记住, 您只能使用 加，减，乘，除，和括号 （请不要用不必要的括号）。 
 
-祝你们好运!"""
+祝你们好运!
+
+如果还有更多问题，查看 https://github.com/SSnipro/24gamebot/blob/master/README.md"""
 
 def correctAnswers(func):
     return func['correct']
