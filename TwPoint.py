@@ -13,9 +13,7 @@ def help():
 每张牌都必须使用一次，但不能重复使用。
 请记住, 您只能使用 加，减，乘，除，和括号 （请不要用不必要的括号）。 
 
-祝你们好运!
-
-如果还有更多问题，查看 https://github.com/SSnipro/24gamebot/blob/master/README.md"""
+祝你们好运!"""
 
 def correctAnswers(func):
     return func['correct']
@@ -157,7 +155,7 @@ def start(update,context):
     fname = str(update.effective_user.first_name)
     chatid = update.effective_chat.id
     cards = random.choices(range(1,10),k=4) 
-    update.effective_message.reply_text(f" {help()} 四个数字分别是：") 
+    update.effective_message.reply_text(f" {help()} \n\n四个数字分别是：") 
     context.bot.send_message(chatid, text=f"{cards[0]}, {cards[1]}, {cards[2]}, {cards[3]}")
     context.bot.send_photo(chatid, photo=open('/Users/Snipro/work/24gamebot/Images/re.png', 'rb'), caption= "⚠️ 温馨提示：请把 Telegram 自动表情给关掉！")
     set_games_cards(chatid,cards,uid,fname)
