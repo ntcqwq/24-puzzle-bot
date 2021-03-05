@@ -95,10 +95,10 @@ def sort_leaderboards(chatid,UID,FNAME,title,WLB,uids):
         for uid in uids:
             for answer in games[chatid]['users'][uid]['correct']['answer']:
                 time = answer[1] - games[chatid]['time']
-                time = str(time)[:-7]
+                ToSeconds = str(time)[:-7]
                 PlayerStatus.append({
                         'ct': float(time.replace(":","")),
-                        'time':time,
+                        'time':ToSeconds,
                         'uid':uid,
                         'answer':answer[0],
                         'fname':games[chatid]['users'][uid]['fname']
