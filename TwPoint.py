@@ -12,6 +12,7 @@ def help():
 您的目标是尝试去使用四个数字来算出 24。
 每张牌都必须使用一次，但不能重复使用。
 请记住, 您只能使用 加，减，乘，除，和括号 （请不要用不必要的括号）。 
+您只能使用三个加减乘除的符号。
 
 祝你们好运!"""
 
@@ -228,7 +229,7 @@ def proc_text(update,context):
                     else:
                         games[chatid]['users'][uid]['error'] += 1
                         LifetimeStats[uid]['error'] += 1
-                        msg = f"请使用我给你的那几个数字并且不要使用不必要的括号！需有查看更多规则，请查看 /gamerules ."                                                                                                                    
+                        msg = f"请使用我给你的那几个数字，只用三个加减乘除的符号，并且不要使用不必要的括号！需有查看更多规则，请查看 /gamerules ."                                                                                                                    
                 except:
                     msg = f"{first_name} 答错啦！您的目标是尝试去使用 {games[chatid]['cards']} 来算出 24.\n请记住, 您只能使用 +, -, *, / 和 (). "
                     games[chatid]['users'][uid]['error'] += 1
