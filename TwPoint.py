@@ -22,7 +22,7 @@ def errors(func):
     return func['error']
 
 def times(func):
-    return func['ct']
+    return func['AccTime']
 
 def set_games_cards(chatid,cards,uid,fname):
     games[chatid] = {}
@@ -61,15 +61,13 @@ def check_lifetime_stats(uid,first_name):
             'error':0
         }
 
-def sort_leaderboards(chatid,UID,FNAME,title,WLB,uids):
+def sort_leaderboards(chatid,WLB,uids):
 
     Leaderboard = ""
     Title = ""
     Placement = 1 
     PlayerStatus = []
 
-    check_user(UID,chatid,FNAME)
-    
     if WLB == "QLB" or WLB == "LTLB":
         for uid in uids:
             if WLB == "QLB":
@@ -80,7 +78,6 @@ def sort_leaderboards(chatid,UID,FNAME,title,WLB,uids):
                     'fname': games[chatid]['users'][uid]['fname']
                     })
             elif WLB == "LTLB":
-                check_lifetime_stats(UID,FNAME)
                 PlayerStatus.append({
                     'uid': uid,
                     'correct': LifetimeStats[uid]['correct'],
@@ -91,35 +88,45 @@ def sort_leaderboards(chatid,UID,FNAME,title,WLB,uids):
         PlayerStatus.sort(key=errors,reverse=False)
         PlayerStatus.sort(key=correctAnswers,reverse=True)
 
+        title = ["🏆 𝗖𝗵𝗮𝗺𝗽𝗶𝗼𝗻","🎖 𝗪𝗶𝗻𝗻𝗲𝗿","🏅 𝗩𝗶𝗰𝘁𝗼𝗿"]
+
+        for EachPlayer in PlayerStatus:  
+            if Placement != 1 and Placement != 2 and Placement != 3:
+                Leaderboard += f"「{Placement}𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ {EachPlayer['fname']} | ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
+            else:
+                for Num in range(1,4):
+                    if Placement == Num:
+                        Title = title[Num-1]
+                Leaderboard += f"「{Title}」 ✨ {EachPlayer['fname']} | ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
+            Placement += 1
+
     elif WLB == "QCAT":
         for uid in uids:
             for answer in games[chatid]['users'][uid]['correct']['answer']:
-                time = answer[1] - games[chatid]['time']
-                ToSeconds = str(time)[:-7]
+                AccTime = answer[1] - games[chatid]['time']
+                ToSeconds = str(AccTime)[:-7]
                 PlayerStatus.append({
-                        'ct': float(time.replace(":","")),
+                        'AccTime': float(str(AccTime).replace(":","")),
                         'time':ToSeconds,
                         'uid':uid,
                         'answer':answer[0],
                         'fname':games[chatid]['users'][uid]['fname']
                     })
-            PlayerStatus.sort(key=times,reverse=False)
+        
+        PlayerStatus.sort(key=times,reverse=False)
 
-    for EachPlayer in PlayerStatus:  
-        if Placement != 1 and Placement != 2 and Placement != 3:
-            if WLB == "QLB" or WLB == "LTLB":
-                Leaderboard += f"「{Placement}𝘁𝗵 𝗽𝗹𝗮𝗰𝗲」 ✨ {EachPlayer['fname']} | ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
-            elif WLB == "QCAT":
+        title = ["🥇 𝗚𝗼𝗹𝗱","🥈 𝗦𝗶𝗹𝘃𝗲𝗿","🥉 𝗕𝗿𝗼𝗻𝘇𝗲"]
+
+        for EachPlayer in PlayerStatus:  
+            if Placement != 1 and Placement != 2 and Placement != 3:
                 Leaderboard += f"「{Placement}𝘁𝗵 𝗮𝗻𝘀𝘄𝗲𝗿」{EachPlayer['fname']}  ✔︎  {EachPlayer['answer']} ⏱ ({EachPlayer['time']})\n"
-        else:
-            for Num in range(1,4):
-                if Placement == Num:
-                    Title = title[Num-1]
-            if WLB == "QLB" or WLB == "LTLB":
-                Leaderboard += f"「{Title}」 ✨ {EachPlayer['fname']} | ✅ {EachPlayer['correct']} 次正确 ❌ {EachPlayer['error']} 次错误\n"
-            elif WLB == "QCAT":
+            else:
+                for Num in range(1,4):
+                    if Placement == Num:
+                        Title = title[Num-1]
                 Leaderboard += f"「{Title}」{EachPlayer['fname']}  ✔︎  {EachPlayer['answer']} ⏱ ({EachPlayer['time']})\n"
-        Placement += 1
+            Placement += 1
+
     return Leaderboard 
     
 def detective_system(answer,cards):
@@ -157,7 +164,10 @@ def start(update,context):
     cards = random.choices(range(1,10),k=4) 
     update.effective_message.reply_text(f" {help()} \n\n四个数字分别是：") 
     context.bot.send_message(chatid, text=f"{cards[0]}, {cards[1]}, {cards[2]}, {cards[3]}")
-    context.bot.send_photo(chatid, photo=open('/Users/Snipro/work/24gamebot/Images/re.png', 'rb'), caption= "⚠️ 温馨提示：请把 Telegram 自动表情给关掉！")
+
+    if random.choice(range(1,4)) == 2:
+        context.bot.send_photo(chatid, photo=open('/Users/Snipro/work/24gamebot/Images/re.png', 'rb'), caption= "⚠️ 温馨提示：请把 Telegram 自动表情给关掉！")
+
     set_games_cards(chatid,cards,uid,fname)
 
 
@@ -172,11 +182,11 @@ def question(update,context):
 --------------------
 目前的正确答案：
 
-{sort_leaderboards(chatid,uid,first_name,["🥇 𝗚𝗼𝗹𝗱","🥈 𝗦𝗶𝗹𝘃𝗲𝗿","🥉 𝗕𝗿𝗼𝗻𝘇𝗲"],"QCAT",games[chatid]['users'])}
+{sort_leaderboards(chatid,"QCAT",games[chatid]['users'])}
 --------------------
 个人排行榜：
 
-{sort_leaderboards(chatid,uid,first_name,["🏆 𝗖𝗵𝗮𝗺𝗽𝗶𝗼𝗻","🎖 𝗪𝗶𝗻𝗻𝗲𝗿","🏅 𝗩𝗶𝗰𝘁𝗼𝗿"],"QLB",games[chatid]['users'])}
+{sort_leaderboards(chatid,"QLB",games[chatid]['users'])}
 """)
     except KeyError:
         update.effective_message.reply_text("目前没有被开启的游戏。/gamestart24 来开启一个游戏。")
@@ -189,10 +199,7 @@ def rules(update,context):
     update.message.reply_text(help())
 
 def List_Lifetime_Stats(update,context):
-    uid = str(update.effective_user.id)
-    first_name = update.effective_user.first_name
-    
-    update.message.reply_text(sort_leaderboards(update.effective_chat.id,uid,first_name,["🏆 𝗖𝗵𝗮𝗺𝗽𝗶𝗼𝗻","🎖 𝗪𝗶𝗻𝗻𝗲𝗿","🏅 𝗩𝗶𝗰𝘁𝗼𝗿"],"LTLB",LifetimeStats))
+    update.message.reply_text(sort_leaderboards(update.effective_chat.id,"LTLB",LifetimeStats))
 
 def proc_text(update,context):
     first_name = update.effective_user.first_name
