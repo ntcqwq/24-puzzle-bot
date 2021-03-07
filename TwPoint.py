@@ -193,14 +193,79 @@ def question(update,context):
         update.effective_message.reply_text("目前没有被开启的游戏。/gamestart24 来开启一个游戏。")
 
 def end(update,context):
-    update.effective_message.reply_text("游戏结束。/gamestart24 来开启一个游戏。")
-    del games[update.effective_chat.id]
-
+    chatid = update.effective_chat.id
+    try:
+        if not answer(chatid)[0] == "":
+            update.message.reply_text(f"游戏结束。/gamestart24 来开启一个游戏。\n\n所有的正确答案：\n\n{answer(chatid)[0]}")
+        else:
+            update.message.reply_text(f"游戏结束。/gamestart24 来开启一个游戏。\n\n所有的正确答案：\n\n无")
+        try:
+            context.bot.send_message(chatid,text=answer(chatid)[1])
+        except:
+            pass
+        del games[chatid]
+    except KeyError:
+        update.effective_message.reply_text("目前没有被开启的游戏。/gamestart24 来开启一个游戏。")
+        
 def rules(update,context):
     update.message.reply_text(help())
 
 def List_Lifetime_Stats(update,context):
     update.message.reply_text(sort_leaderboards(update.effective_chat.id,"LTLB",LifetimeStats))
+
+def answer(chatid):
+    cards = [
+        games[chatid]['cards'][0],
+        games[chatid]['cards'][1],
+        games[chatid]['cards'][2],
+        games[chatid]['cards'][3]
+        ]
+        
+    AllPossibleCombs = []
+    correctAnswers = ""
+    correctAnswers2 = ""
+    count = 1
+
+    for n1 in cards:
+        for n2 in cards:
+            for n3 in cards:
+                for n4 in cards:
+                    Comb = [n1,n2,n3,n4]
+                    Comb.sort()
+                    cards.sort()
+                    if Comb == cards and not Comb in AllPossibleCombs:
+                        AllPossibleCombs.append(f"{n1} o {n2} t {n3} h {n4}")
+                        AllPossibleCombs.append(f"({n1} o {n2}) t {n3} h {n4}")
+                        AllPossibleCombs.append(f"{n1} o ({n2} t {n3}) h {n4}")
+                        AllPossibleCombs.append(f"{n1} o {n2} t ({n3} h {n4})")
+                        AllPossibleCombs.append(f"(({n1} o {n2}) t {n3}) h {n4}")
+                        AllPossibleCombs.append(f"({n1} o {n2}) t ({n3} h {n4})")
+                        AllPossibleCombs.append(f"({n1} o ({n2} t {n3})) h {n4}")
+                        AllPossibleCombs.append(f"{n1} o {n2} t {n3} h {n4}")
+                        AllPossibleCombs.append(f"{n1} o (({n2} t {n3}) h {n4})")
+                        AllPossibleCombs.append(f"{n1} o ({n2} t ({n3} h {n4}))")
+                        AllPossibleCombs.append(f"({n1} o {n2} t {n3}) h {n4}")
+                        AllPossibleCombs.append(f"{n1} o ({n2} t {n3} h {n4})")
+                        
+    symbols = ["+","-","*","/"]
+    for each in AllPossibleCombs:
+        for s1 in symbols:
+            for s2 in symbols:
+                for s3 in symbols:
+                    e = each.replace("o",s1).replace("t",s2).replace("h",s3)
+                    try:
+                        answer = eval(e)
+                        if answer == 24:
+                            if count < 50:
+                                correctAnswers += f"{count} ✔︎ {e} = 24\n"
+                                count += 1
+                            else:
+                                correctAnswers2 += f"{count} ✔︎ {e} = 24\n"
+                                count += 1
+                    except ZeroDivisionError:
+                        pass
+    return correctAnswers, correctAnswers2
+
 
 def proc_text(update,context):
     first_name = update.effective_user.first_name
