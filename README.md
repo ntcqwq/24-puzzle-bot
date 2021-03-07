@@ -118,7 +118,7 @@ This is the formation:
 
 > Fixed "File Path" bug
 
-### ----------------
+----------------
 
 ＃Noah 的 24 点游戏机器人
 
