@@ -110,6 +110,14 @@ This is the formation:
 
 > First release
 
+#### Version Beta
+
+> Displayed all the answers when a game is ended
+
+> Improved Leaderboards
+
+> Fixed "File Path" bug
+
 ### ----------------
 
 ＃Noah 的 24 点游戏机器人
