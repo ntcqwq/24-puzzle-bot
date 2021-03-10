@@ -163,13 +163,18 @@ def start(update,context):
     fname = str(update.effective_user.first_name)
     chatid = update.effective_chat.id
     cards = random.choices(range(1,10),k=4) 
+    set_games_cards(chatid,cards,uid,fname)
+    while answer(chatid)[0] == "":
+        cards = random.choices(range(1,10),k=4) 
+        set_games_cards(chatid,cards,uid,fname)
+        continue
     update.effective_message.reply_text(f" {help()} \n\n四个数字分别是：") 
     context.bot.send_message(chatid, text=f"{cards[0]}, {cards[1]}, {cards[2]}, {cards[3]}")
 
     if random.choice(range(1,4)) == 2:
         context.bot.send_photo(chatid, photo=open(f'{config.run_path}/Images/re.png', 'rb'), caption= "⚠️ 温馨提示：请把 Telegram 自动表情给关掉！")
 
-    set_games_cards(chatid,cards,uid,fname)
+    
 
 
 def question(update,context):
@@ -195,14 +200,9 @@ def question(update,context):
 def end(update,context):
     chatid = update.effective_chat.id
     try:
-        if not answer(chatid)[0] == "":
-            update.message.reply_text(f"游戏结束。/gamestart24 来开启一个游戏。\n\n所有的正确答案：\n\n{answer(chatid)[0]}")
-        else:
-            update.message.reply_text(f"游戏结束。/gamestart24 来开启一个游戏。\n\n所有的正确答案：\n\n无")
-        try:
+        update.message.reply_text(f"游戏结束。/gamestart24 来开启一个游戏。\n\n所有的正确答案：\n\n{answer(chatid)[0]}")
+        if not answer(chatid)[1] == "":
             context.bot.send_message(chatid,text=answer(chatid)[1])
-        except:
-            pass
         del games[chatid]
     except KeyError:
         update.effective_message.reply_text("目前没有被开启的游戏。/gamestart24 来开启一个游戏。")
@@ -233,30 +233,24 @@ def answer(chatid):
                     Comb = [n1,n2,n3,n4]
                     Comb.sort()
                     cards.sort()
-                    if Comb == cards and not Comb in AllPossibleCombs:
-                        AllPossibleCombs.append(f"{n1} o {n2} t {n3} h {n4}")
-                        AllPossibleCombs.append(f"({n1} o {n2}) t {n3} h {n4}")
-                        AllPossibleCombs.append(f"{n1} o ({n2} t {n3}) h {n4}")
-                        AllPossibleCombs.append(f"{n1} o {n2} t ({n3} h {n4})")
-                        AllPossibleCombs.append(f"(({n1} o {n2}) t {n3}) h {n4}")
-                        AllPossibleCombs.append(f"({n1} o {n2}) t ({n3} h {n4})")
-                        AllPossibleCombs.append(f"({n1} o ({n2} t {n3})) h {n4}")
-                        AllPossibleCombs.append(f"{n1} o {n2} t {n3} h {n4}")
-                        AllPossibleCombs.append(f"{n1} o (({n2} t {n3}) h {n4})")
-                        AllPossibleCombs.append(f"{n1} o ({n2} t ({n3} h {n4}))")
-                        AllPossibleCombs.append(f"({n1} o {n2} t {n3}) h {n4}")
-                        AllPossibleCombs.append(f"{n1} o ({n2} t {n3} h {n4})")
-                        
+                    if Comb == cards and not f"{n1} s1 {n2} s2 {n3} s3 {n4}" in AllPossibleCombs:
+                        AllPossibleCombs.extend([
+                            f"{n1} s1 {n2} s2 {n3} s3 {n4}",
+                            f"({n1} s1 {n2}) s2 {n3} s3 {n4}", f"{n1} s1 ({n2} s2 {n3}) s3 {n4}", f"{n1} s1 {n2} s2 ({n3} s3 {n4})",
+                            f"(({n1} s1 {n2}) s2 {n3}) s3 {n4}", f"({n1} s1 {n2}) s2 ({n3} s3 {n4})",
+                            f"({n1} s1 ({n2} s2 {n3})) s3 {n4}", f"{n1} s1 (({n2} s2 {n3}) s3 {n4})", f"{n1} s1 ({n2} s2 ({n3} s3 {n4}))",
+                            f"({n1} s1 {n2} s2 {n3}) s3 {n4}", f"{n1} s1 ({n2} s2 {n3} s3 {n4})"
+                            ]) 
     symbols = ["+","-","*","/"]
     for each in AllPossibleCombs:
         for s1 in symbols:
             for s2 in symbols:
                 for s3 in symbols:
-                    e = each.replace("o",s1).replace("t",s2).replace("h",s3)
+                    e = each.replace("s1",s1).replace("s2",s2).replace("s3",s3)
                     try:
                         answer = eval(e)
                         if answer == 24:
-                            if count < 50:
+                            if count < 76:
                                 correctAnswers += f"{count} ✔︎ {e} = 24\n"
                                 count += 1
                             else:
@@ -264,7 +258,7 @@ def answer(chatid):
                                 count += 1
                     except ZeroDivisionError:
                         pass
-    return correctAnswers, correctAnswers2
+    return [correctAnswers, correctAnswers2]
 
 
 def proc_text(update,context):
