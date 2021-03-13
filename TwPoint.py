@@ -203,6 +203,12 @@ def end(update,context):
         update.message.reply_text(f"游戏结束。/gamestart24 来开启一个游戏。\n\n所有的正确答案：\n\n{answer(chatid)[0]}")
         if not answer(chatid)[1] == "":
             context.bot.send_message(chatid,text=answer(chatid)[1])
+        if not answer(chatid)[2] == "":
+            context.bot.send_message(chatid,text=answer(chatid)[2])
+        if not answer(chatid)[3] == "":
+            context.bot.send_message(chatid,text=answer(chatid)[3])
+        if not answer(chatid)[4] == "":
+            context.bot.send_message(chatid,text=answer(chatid)[4])
         del games[chatid]
     except KeyError:
         update.effective_message.reply_text("目前没有被开启的游戏。/gamestart24 来开启一个游戏。")
@@ -222,8 +228,13 @@ def answer(chatid):
         ]
         
     AllPossibleCombs = []
+
     correctAnswers = ""
     correctAnswers2 = ""
+    correctAnswers3 = ""
+    correctAnswers4 = ""
+    correctAnswers5 = ""
+
     count = 1
 
     for n1 in cards:
@@ -237,8 +248,8 @@ def answer(chatid):
                         AllPossibleCombs.extend([
                             f"{n1} s1 {n2} s2 {n3} s3 {n4}",
                             f"({n1} s1 {n2}) s2 {n3} s3 {n4}", f"{n1} s1 ({n2} s2 {n3}) s3 {n4}", f"{n1} s1 {n2} s2 ({n3} s3 {n4})",
-                            f"(({n1} s1 {n2}) s2 {n3}) s3 {n4}", f"({n1} s1 {n2}) s2 ({n3} s3 {n4})",
-                            f"({n1} s1 ({n2} s2 {n3})) s3 {n4}", f"{n1} s1 (({n2} s2 {n3}) s3 {n4})", f"{n1} s1 ({n2} s2 ({n3} s3 {n4}))",
+                            f"(({n1} s1 {n2}) s2 {n3}) s3 {n4}", f"({n1} s1 ({n2} s2 {n3})) s3 {n4}", f"{n1} s1 (({n2} s2 {n3}) s3 {n4})", f"{n1} s1 ({n2} s2 ({n3} s3 {n4}))",
+                            f"({n1} s1 {n2}) s2 ({n3} s3 {n4})",
                             f"({n1} s1 {n2} s2 {n3}) s3 {n4}", f"{n1} s1 ({n2} s2 {n3} s3 {n4})"
                             ]) 
     symbols = ["+","-","*","/"]
@@ -250,15 +261,20 @@ def answer(chatid):
                     try:
                         answer = eval(e)
                         if answer == 24:
-                            if count < 76:
+                            if count < 81:
                                 correctAnswers += f"{count} ✔︎ {e} = 24\n"
-                                count += 1
-                            else:
+                            elif count < 161:
                                 correctAnswers2 += f"{count} ✔︎ {e} = 24\n"
-                                count += 1
+                            elif count < 241:
+                                correctAnswers3 += f"{count} ✔︎ {e} = 24\n"
+                            elif count < 321:
+                                correctAnswers4 += f"{count} ✔︎ {e} = 24\n"
+                            elif count < 401:
+                                correctAnswers5 += f"{count} ✔︎ {e} = 24\n"
+                            count += 1
                     except ZeroDivisionError:
                         pass
-    return [correctAnswers, correctAnswers2]
+    return [correctAnswers,correctAnswers2,correctAnswers3,correctAnswers4,correctAnswers5]
 
 
 def proc_text(update,context):
