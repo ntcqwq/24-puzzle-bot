@@ -226,7 +226,8 @@ def answer(chatid):
         games[chatid]['cards'][2],
         games[chatid]['cards'][3]
         ]
-        
+    cards.sort()
+
     AllPossibleCombs = []
 
     correctAnswers = ""
@@ -241,23 +242,22 @@ def answer(chatid):
         for n2 in cards:
             for n3 in cards:
                 for n4 in cards:
-                    Comb = [n1,n2,n3,n4]
-                    Comb.sort()
-                    cards.sort()
-                    if Comb == cards and not f"{n1} s1 {n2} s2 {n3} s3 {n4}" in AllPossibleCombs:
+                    comb = [n1,n2,n3,n4]
+                    comb.sort()
+                    if comb == cards and not f"{n1} f {n2} s {n3} t {n4}" in AllPossibleCombs:
                         AllPossibleCombs.extend([
-                            f"{n1} s1 {n2} s2 {n3} s3 {n4}",
-                            f"({n1} s1 {n2}) s2 {n3} s3 {n4}", f"{n1} s1 ({n2} s2 {n3}) s3 {n4}", f"{n1} s1 {n2} s2 ({n3} s3 {n4})",
-                            f"(({n1} s1 {n2}) s2 {n3}) s3 {n4}", f"({n1} s1 ({n2} s2 {n3})) s3 {n4}", f"{n1} s1 (({n2} s2 {n3}) s3 {n4})", f"{n1} s1 ({n2} s2 ({n3} s3 {n4}))",
-                            f"({n1} s1 {n2}) s2 ({n3} s3 {n4})",
-                            f"({n1} s1 {n2} s2 {n3}) s3 {n4}", f"{n1} s1 ({n2} s2 {n3} s3 {n4})"
+                            f"{n1} f {n2} s {n3} t {n4}",
+                            f"({n1} f {n2}) s {n3} t {n4}", f"{n1} f ({n2} s {n3}) t {n4}", f"{n1} f {n2} s ({n3} t {n4})",
+                            f"(({n1} f {n2}) s {n3}) t {n4}", f"({n1} f ({n2} s {n3})) t {n4}", f"{n1} f (({n2} s {n3}) t {n4})", f"{n1} f ({n2} s ({n3} t {n4}))",
+                            f"({n1} f {n2}) s ({n3} t {n4})",
+                            f"({n1} f {n2} s {n3}) t {n4}", f"{n1} f ({n2} s {n3} t {n4})"
                             ]) 
     symbols = ["+","-","*","/"]
     for each in AllPossibleCombs:
         for s1 in symbols:
             for s2 in symbols:
                 for s3 in symbols:
-                    e = each.replace("s1",s1).replace("s2",s2).replace("s3",s3)
+                    e = each.replace("f",s1).replace("s",s2).replace("t",s3)
                     try:
                         answer = eval(e)
                         if answer == 24:
