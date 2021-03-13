@@ -201,14 +201,9 @@ def end(update,context):
     chatid = update.effective_chat.id
     try:
         update.message.reply_text(f"游戏结束。/gamestart24 来开启一个游戏。\n\n所有的正确答案：\n\n{answer(chatid)[0]}")
-        if not answer(chatid)[1] == "":
-            context.bot.send_message(chatid,text=answer(chatid)[1])
-        if not answer(chatid)[2] == "":
-            context.bot.send_message(chatid,text=answer(chatid)[2])
-        if not answer(chatid)[3] == "":
-            context.bot.send_message(chatid,text=answer(chatid)[3])
-        if not answer(chatid)[4] == "":
-            context.bot.send_message(chatid,text=answer(chatid)[4])
+        for i in range(1,7):
+            if not answer(chatid)[i] == "":
+                context.bot.send_message(chatid,text=answer(chatid)[i])
         del games[chatid]
     except KeyError:
         update.effective_message.reply_text("目前没有被开启的游戏。/gamestart24 来开启一个游戏。")
@@ -235,6 +230,9 @@ def answer(chatid):
     correctAnswers3 = ""
     correctAnswers4 = ""
     correctAnswers5 = ""
+    correctAnswers6 = ""
+    correctAnswers7 = ""
+    correctAnswers8 = ""
 
     count = 1
 
@@ -271,10 +269,25 @@ def answer(chatid):
                                 correctAnswers4 += f"{count} ✔︎ {e} = 24\n"
                             elif count < 401:
                                 correctAnswers5 += f"{count} ✔︎ {e} = 24\n"
+                            elif count < 481:
+                                correctAnswers6 += f"{count} ✔︎ {e} = 24\n"
+                            elif count < 561:
+                                correctAnswers7 += f"{count} ✔︎ {e} = 24\n"
+                            elif count < 641:
+                                correctAnswers8 += f"{count} ✔︎ {e} = 24\n"
                             count += 1
                     except ZeroDivisionError:
                         pass
-    return [correctAnswers,correctAnswers2,correctAnswers3,correctAnswers4,correctAnswers5]
+    return [
+        correctAnswers,
+        correctAnswers2,
+        correctAnswers3,
+        correctAnswers4,
+        correctAnswers5,
+        correctAnswers6,
+        correctAnswers7,
+        correctAnswers8
+        ]
 
 
 def proc_text(update,context):
