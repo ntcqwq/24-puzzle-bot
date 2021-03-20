@@ -330,16 +330,16 @@ def proc_text(update,context):
     config.save_config()
 
 def add_handler(dp:Dispatcher):
-    dp.add_handler(CommandHandler('gamestart24', start))
-    dp.add_handler(CommandHandler('gameq', question))
-    dp.add_handler(CommandHandler('gameend24', end))
-    dp.add_handler(CommandHandler('gamerules', rules))
-    dp.add_handler(CommandHandler('gamel',List_Lifetime_Stats))
+    dp.add_handler(CommandHandler('twstart', start))
+    dp.add_handler(CommandHandler('twq', question))
+    dp.add_handler(CommandHandler('twend', end))
+    dp.add_handler(CommandHandler('twrules', rules))
+    dp.add_handler(CommandHandler('twl',List_Lifetime_Stats))
     dp.add_handler(MessageHandler(Filters.text & (~Filters.command) & Filters.chat_type.groups,proc_text))
     return [
-        BotCommand('gamestart24','开始一个24点游戏'),
-        BotCommand('gameq','查询当前进行中的24点游戏'),
-        BotCommand('gameend24','结束当前进行的游戏'),
-        BotCommand('gamerules','查询24点的游戏规则'),
-        BotCommand('gamel','查询总排行榜')
+        BotCommand('twstart','开始一个24点游戏'),
+        BotCommand('twq','查询当前进行中的24点游戏'),
+        BotCommand('twend','结束当前进行的游戏'),
+        BotCommand('twrules','查询24点的游戏规则'),
+        BotCommand('twl','查询总排行榜')
         ]
