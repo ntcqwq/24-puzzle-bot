@@ -134,6 +134,9 @@ def callback(update,context):
                 games[chatid]['current'] = info[0]
                 games[chatid]['story'] += f"{info[2]} ➡ ({info[1]})\n"
                 games[chatid]['trans'] = detective_system(info[2])
+                games[chatid]['nextanswer'] = []
+                games[chatid]['count'] = 1
+                games[chatid]['keyboard'] = [{}]
                 update.effective_message.reply_text(f"{games[chatid]['story']}\n\n下一个人请使用 '{games[chatid]['trans']}' 开头的句子来造句。")
     else:
         query.answer("您不是选择的人！")
