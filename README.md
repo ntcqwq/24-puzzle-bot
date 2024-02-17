@@ -2,7 +2,7 @@
 
 ### Contributors:
 
-> @ SSnipro 
+> @ ntcie 
 
 > @ Sichengthebest (About 3 lines) 
 
