@@ -124,7 +124,7 @@ This is the formation:
 
 ### 贡献者：
 
-> @ SSnipro
+> @ ntcie
 
 > @ Sichengthebest（大约 3 行）
 
